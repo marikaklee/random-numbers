@@ -1,0 +1,188 @@
+// Marika Lee
+// LAB 01: Generating random numbers 
+// DUE 1/29/14
+
+/* ------------------------------ QUESTION 2 ------------------------------
+ * 
+ * How unpredictable is this sequence using (15,7,10)? 
+ * It is very predictable because it only repeatedly prints out 5.
+ * 
+ * Change the parameters to (15,7,12). What happens? 
+ * Now the result is 9,3,9,3...
+ * 
+ * Change the parameters to (15,2,10). What happens? 
+ * Now the result is 0,0,0,0...
+ * 
+ * Try (15,M,10) and try various small values for the multiplier M and see if
+ * can derive any conclusions about what you see. 
+ * (15,1,10): 5,5,5...
+ * (15,2,10): 0,0,0...
+ * (15,3,10): 5,5,5...
+ * (15,4,10): 0,0,0...
+ * (15,5,10): 5,5,5...
+ * Whenever M is odd, a repeated sequence of 5s is the output. Whenever M is even,
+ * a repeated sequence of 0s is the output. The reason the result is 0 for the 
+ * odds is because "rand" and "multiplier" equal a value that can
+ * be divded by 10 (modulus). The reason the result is 5 for the evens
+ * is because "rand" times the "multiplier" then divided by
+ * 10 has a remainder of 5. 
+ * 
+ * Try (3,7,11) and (5,7,11) and (7,11,13). Do you see any pattern?
+ * (3,7,11): 10 random numbers repeated    
+ * (5,7,11): 10 random numbers repeated 
+ * (7,11,13): 12 random numbers repeated
+ * Yes there's a pattern. The number of random numbers is the value of the "modulus"
+ * minus 1. So for the first two examples, it's 11-1=10 random numbers repeated. 
+ * 
+ * SUMMARY:
+ * Problem 2 shows that if "modolus" IS A PRIME, the number of random numbers print out 
+ * before repeating itself is equal to the remainder of "rand" and "multiplier." 
+ * When the mod function is applied and the result is 0, the output will list out 0 
+ * repeatedly. If "modulus" is NOT A PRIME, the number of random numbers before repeating itself
+ * is the modulus value minus 1. So if we want to generate a sequence of the most random 
+ * numbers, we need a really big prime number as "modulus." In this case, I put 101
+ * as an example and because I'm printing out 100 numbers, no numbers were repeated.*/ 
+
+/* ------------------------------ QUESTION 3 ------------------------------
+ * 
+ * Why does the sequence repeat when it gets back to the same number that it started with?
+ * The reason why is because when you apply the mod function to (rand*multiplier), 
+ * it will only a value from 1 to "modulus"-1. EX) 4%1=1, 4%2=2, 4%3=3, 4%4=0, 5%4=1." 
+ * It loops back to the beginning of the hash table after it fills up as seen with 5%4.
+ * 
+ * (3,7,11): 10 random numbers repeated  
+ * (19,7,11): 10 random numbers repeated 
+ * (23,7,11): 10 random numbers repeated 
+ * (53,7,11): 10 random numbers repeated 
+ * (269,7,11): 10 random numbers repeated 
+ * (919,7,11): 10 random numbers repeated 
+ * 
+ * (3,19,11): 10 random numbers repeated 
+ * (3,23,11): 3,3,3...  
+ * (3,53,11): 5 random numbers repeated 
+ * (3,269,11): 5 random numbers repeated 
+ * (3,919,11): 10 random numbers repeated 
+ * (3,1721,11): 5 random numbers repeated 
+ * 
+ * If the modulus is M what is the upper bound on the period? Will this upper bound 
+ * hold in every case?
+ * The upper bound is M-1. No, it doesn't hold for every choice of the other parameters.
+ * Only some prime numbers for "multiplier" will output M-1 random numbers repeated. 
+ * All prime numbers for "rand" will output M-1 random numbers. */ 
+
+/* ------------------------------ QUESTION 4 ------------------------------
+ * How well does this general strategy work, according to the histogram?
+ * (3,7,11): 1-10: 10 stars
+ * (1721,7,11): 1-10: 10 stars
+ * 
+ * (3,919,11): 1-10: 10 stars 
+ * (3,1721,11): 1,3-5,9: 20 stars 
+ * The M-1 strategy doesn't work very well. It only works when certain primes are 
+ * used in the second parameter (multiplier). Also the first or second parameter
+ * cannot be the same prime number as the third parameter. /
+
+/* ------------------------------ QUESTION 4 ------------------------------
+ * Try it on the parameters (3, 7, 0, 12) and (3, 7, 0, 11) and see if one of these is 
+ * better than the other.
+ * I'm using Test 2, the Modulus Test.
+ * (3,7,12): 9,3,9,3,9,3...for arrayA and arrayB
+ * (3,7,11): 10 number repeats for arrayA and arrayB
+ * (3,7,11) is better because theres 10 random numbers and (3,7,12) only has 2. 
+ */
+
+public class Lab01
+{
+  public static void main (String[] args)
+  { 
+    /* ---------------------- PROBLEMS 2-3 ----------------------*/ 
+    
+    int rand = 5;                  // the initial value of rand is called the "seed"                   
+    int multiplier = 7;             
+    int modulus = 11; 
+    int limit=10^9;
+    
+    int arrayA[] = new int[100];
+    int arrayB[] = new int[100];
+    
+    for(int i = 0; i < limit; ++i) 
+    {
+      rand = (rand * multiplier) % modulus; 
+      arrayA[i] = rand;
+      //System.out.println(rand);
+      
+      /* ---------------------- PROBLEMS 4-5 ----------------------*/ 
+      arrayB[i] = rand%101;
+      //System.out.println(rand%101);
+    }
+    //printHistogram(arrayA);
+    //printHistogram(arrayB);
+    printDice();
+    
+  }
+  
+  
+      /* ---------------------- PROBLEMS 6 ----------------------*/ 
+  
+  public static void printDice()
+  {
+    int rand = 2;                                   
+    int multiplier = 3;             
+    int modulus = 7; 
+    int limit=1000000000; 
+    
+    float countOne = 0;
+    float countTwo = 0;
+    float countThree = 0;
+    float countFour = 0;
+    float countFive = 0;
+    float countSix = 0;
+    
+    //int arrayA[] = new int[6];
+    
+    for(int i = 0; i < limit; i++) 
+    {
+      rand = (rand * multiplier) % modulus; 
+      //arrayA[i] = rand;
+      //System.out.println(rand);
+      if (rand == 1)
+        countOne++;
+      if (rand == 2)
+        countTwo++;
+      if (rand == 3)
+        countThree++;
+      if (rand == 4)
+        countFour++;
+      if (rand == 5)
+        countFive++;
+      if (rand == 6)
+        countSix++;
+    }
+    System.out.println ("1: " + (countOne/limit)*1000 + "%");
+    System.out.println ("2: " + (countTwo/limit)*1000 + "%");
+    System.out.println ("3: " + (countThree/limit)*1000 + "%");
+    System.out.println ("4: " + (countFour/limit)*1000 + "%");
+    System.out.println ("5: " + (countFive/limit)*1000 + "%");
+    System.out.println ("6: " + (countSix/limit)*1000 + "%");
+  }
+  
+  private static boolean printStars = true;             // to turn off "graphical" display of asterisks
+  public static void printHistogram(int [] A) {
+    int max = -1;                                      // find the maximum value in the array
+    for(int i = 0; i < A.length; ++i) {
+      if(A[i] > max)
+        max = A[i];
+    } 
+    int [] H = new int[max+1];                         // count number of occurrrences of values 0 .. max
+    for(int i = 0; i < A.length; ++i) {
+      ++H[A[i]];
+    } 
+    for(int i = 0; i <= max; ++i) {                    // print out results; note are max+1 values ( 0 .. max )
+      System.out.print(i + ":\t" + H[i] + "\t"); 
+      if(printStars) {
+        for(int j = 0; j < H[i]; ++j)
+          System.out.print("*");
+      }
+      System.out.println(); 
+    }
+  } 
+}
